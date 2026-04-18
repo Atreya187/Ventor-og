@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // This checks if Vercel has a variable set. If not, it uses your Render URL.
-const API_URL = import.meta.env.VITE_API_URL || "https://ventor-backend-9kr1.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "https://ventor-35bu.onrender.com";
 
 const api = axios.create({
   baseURL: API_URL,
