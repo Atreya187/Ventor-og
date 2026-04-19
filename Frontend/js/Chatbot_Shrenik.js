@@ -1,89 +1,65 @@
+import axios from 'axios'; // <--- Ensure this is at the top of your file! added later
 const input = document.getElementById("chatbot-input");
 const sendBtn = document.getElementById("chatbot-send");
 const messages = document.getElementById("chatbot-messages");
 
 /* SEND MESSAGE FUNCTION */
 
-async function sendMessage(){
+import axios from 'axios'; // <--- Ensure this is at the top of your file!
 
-const text = input.value.trim();
+async function sendMessage() {
+    const text = input.value.trim();
+    if (text === "") return;
 
-if(text === "") return;
+    /* USER MESSAGE */
+    const userDiv = document.createElement("div");
+    userDiv.className = "user-message";
+    userDiv.innerText = text;
+    messages.appendChild(userDiv);
+    messages.scrollTop = messages.scrollHeight;
+    input.value = "";
 
-/* USER MESSAGE */
+    /* SHOW TYPING INDICATOR */
+    const typingDiv = document.createElement("div");
+    typingDiv.className = "typing-indicator";
+    typingDiv.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+    `;
+    messages.appendChild(typingDiv);
+    messages.scrollTop = messages.scrollHeight;
 
-const userDiv = document.createElement("div");
-userDiv.className = "user-message";
-userDiv.innerText = text;
+    try {
+        // Use the Render environment variable or fallback
+        const API_URL = import.meta.env.VITE_API_URL || "https://ventor.onrender.com";
+        
+        // Corrected: Use 'text' variable and wait for axios response
+        const response = await axios.post(`${API_URL}/chat`, { 
+            message: text 
+        });
 
-messages.appendChild(userDiv);
+        /* REMOVE TYPING INDICATOR */
+        typingDiv.remove();
 
-messages.scrollTop = messages.scrollHeight;
+        /* BOT MESSAGE */
+        const botDiv = document.createElement("div");
+        botDiv.className = "bot-message";
+        
+        // Corrected: Axios uses .data to access the response body
+        botDiv.innerText = response.data.reply; 
 
-input.value = "";
+        messages.appendChild(botDiv);
+        messages.scrollTop = messages.scrollHeight;
 
-
-/* SHOW TYPING INDICATOR */
-
-const typingDiv = document.createElement("div");
-typingDiv.className = "typing-indicator";
-typingDiv.innerHTML = `
-<div class="typing-dot"></div>
-<div class="typing-dot"></div>
-<div class="typing-dot"></div>
-`;
-
-messages.appendChild(typingDiv);
-messages.scrollTop = messages.scrollHeight;
-
-
-try{
-
-// const response = await fetch("http://localhost:5000/chat",{
-
-// method:"POST",
-// headers:{
-// "Content-Type":"application/json"
-// },
-
-// body:JSON.stringify({
-// message:text
-// })
-
-// });
-
-// USE THIS INSTEAD:
-const API_URL = import.meta.env.VITE_API_URL || "https://ventor.onrender.com";
-const response = await axios.post(`${API_URL}/chat`, { message });
-
-const data = await response.json();
-
-/* REMOVE TYPING INDICATOR */
-
-typingDiv.remove();
-
-/* BOT MESSAGE */
-
-const botDiv = document.createElement("div");
-botDiv.className = "bot-message";
-botDiv.innerText = data.reply;
-
-messages.appendChild(botDiv);
-
-messages.scrollTop = messages.scrollHeight;
-
-}catch(error){
-
-typingDiv.remove();
-
-const botDiv = document.createElement("div");
-botDiv.className = "bot-message";
-botDiv.innerText = "Server not responding.";
-
-messages.appendChild(botDiv);
-
-}
-
+    } catch (error) {
+        console.error("Chatbot Error:", error); // Helpful for debugging
+        typingDiv.remove();
+        const botDiv = document.createElement("div");
+        botDiv.className = "bot-message";
+        botDiv.innerText = "Server not responding.";
+        messages.appendChild(botDiv);
+    }
 }
 
 /* BUTTON CLICK */
