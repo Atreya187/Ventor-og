@@ -23,11 +23,7 @@ app.use(express.json()); // Parse JSON first
 // Use an array to allow both your production site and your local testing
 // Locate this section in your server.js
 app.use(cors({
-  origin: [
-    'https://ventor-og-1.onrender.com', // Your NEW Render Frontend URL
-    'http://localhost:5173'             // For local development
-  ],
-  credentials: true
+  origin: 'https://ventor-og-1.onrender.com' 
 }));
 
 
