@@ -15,10 +15,19 @@ const groq = new Groq({
 
 /* CONNECT DATABASE */
 connectDB();
-
+// origin: "https://ventor-og.vercel.app",
 /* MIDDLEWARE */
-app.use(cors());
-app.use(express.json());
+/* MIDDLEWARE */
+app.use(express.json()); // Parse JSON first
+
+// Use an array to allow both your production site and your local testing
+app.use(cors({
+  origin: 'https://ventor-og.onrender.com' 
+}));
+
+
+
+
 
 /* ROUTES */
 app.use("/api", reportRoutes);
@@ -73,6 +82,11 @@ app.get("/", (req, res) => {
 /* START SERVER */
 // Use process.env.PORT for deployment, fallback to 5000 for local dev
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+
+// app.listen(PORT, () => {
+//   console.log(`Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+// });
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
 });
