@@ -39,18 +39,22 @@ messages.scrollTop = messages.scrollHeight;
 
 try{
 
-const response = await fetch("http://localhost:5000/chat",{
+// const response = await fetch("http://localhost:5000/chat",{
 
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
+// method:"POST",
+// headers:{
+// "Content-Type":"application/json"
+// },
 
-body:JSON.stringify({
-message:text
-})
+// body:JSON.stringify({
+// message:text
+// })
 
-});
+// });
+
+// USE THIS INSTEAD:
+const API_URL = import.meta.env.VITE_API_URL || "https://ventor.onrender.com";
+const response = await axios.post(`${API_URL}/chat`, { message });
 
 const data = await response.json();
 
